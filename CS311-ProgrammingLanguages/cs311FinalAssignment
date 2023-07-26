@@ -1,0 +1,78 @@
+import java.util.Scanner;
+
+public class RLECompression {
+
+    public static String compression(String cmpsdString) {
+        //First, check if String is empty
+        if(cmpsdString == null || cmpsdString.isEmpty())
+            return "";
+
+        StringBuilder strBuilder = new StringBuilder();
+        char[] chars = cmpsdString.toCharArray();
+        char current = chars[0];
+        int counter = 1;
+
+        for(int i = 1; i < chars.length; i++) {
+            if(current == chars[i])
+                counter++;
+            else {
+                if (counter > 1)
+                    strBuilder.append(counter);
+                strBuilder.append(current);
+                current = chars[i];
+                counter = 1;
+            }
+        }
+        if(counter > 1)
+            strBuilder.append(counter);
+        strBuilder.append(current);
+        return strBuilder.toString();
+
+    }
+
+    public static String decompression(String dcmpdString) {
+        if(dcmpdString == null || dcmpdString.isEmpty())
+            return "";
+
+        StringBuilder strBuilder = new StringBuilder();
+        char[] chars = dcmpdString.toCharArray();
+        boolean initIsDigit = false;
+        String digitsString = "";
+        for(char current: chars) {
+            if(!Character.isDigit(current)) {
+                if(initIsDigit) {
+                    String multipleString = new String(new char[Integer.valueOf(digitsString)]).replace("\0", current + "");
+                    strBuilder.append(multipleString);
+                    initIsDigit = false;
+                    digitsString = "";
+                }
+                else {
+                    strBuilder.append(current);
+                }
+            }
+            else {
+                digitsString+=current;
+                initIsDigit = true;
+            }
+        }
+        return strBuilder.toString();
+    }
+
+    public static void main(String args[]) {
+
+        Scanner keyboard = new Scanner(System.in);
+
+        //System.out.println(compression("mmmmmmmmyyyyyyyyy nnnnnnnnaaaaaaaaaammmmmmmmmmmmeeeeeeeeeee" +
+                //" iiiiiiiiiiiiiiissssssssssssssssss bbbbbbbbbbbbooooooooooooooooobbbbbbbbbbbb"));
+
+        //System.out.println(decompression("8m9y 8n10a12m11e 15i18s 12b17o12b"));
+
+        System.out.print("Please enter a String to compress: ");
+        String inputComp = keyboard.nextLine();
+        System.out.println(compression(inputComp));
+
+        System.out.print("Please enter a String to decompress, or enter the compressed String to check validity: ");
+        String inputdecomp = keyboard.nextLine();
+        System.out.println(decompression(inputdecomp));
+    }
+}
